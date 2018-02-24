@@ -16,5 +16,6 @@ export default {
                 id: 'item4',
                 name: 'item4'
             }
-        ]
+        ],
+        panelLst: []
 }

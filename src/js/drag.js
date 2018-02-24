@@ -25,7 +25,7 @@ class Drag {
     this.el.addEventListener('mousedown', start.bind(this), false);
 
     let _move = move.bind(this),
-        _end = end.bind(this);//如果不酱紫无法解除绑定
+        _end = end.bind(this);//如果不这样无法解除绑定
 
     function start(event) {
         this.boundary = this.getBoundary();
@@ -35,8 +35,8 @@ class Drag {
         }
 
         this.sourcePosition = this.panel ? {
-          x: this.binding.x,
-          y: this.binding.y
+          x: parseInt(this.vue.$store.state.panelLst[this.index].x),
+          y: parseInt(this.vue.$store.state.panelLst[this.index].y)
         } : {
           x: 0,
           y: 0
@@ -57,15 +57,29 @@ class Drag {
       }
     
       function end(event) {
+        document.removeEventListener('mousemove', _move)
+        document.removeEventListener('mouseup', _end)
           if(!this.panel){
             if(this.currentX < this.boundary.left){
                 this.setData(0,0);
-              }else if(this.currentX> this.boundary.left && event.x-this.offsetX < this.boundary.left){
-                this.setData(this.translateX-(event.x-this.offsetX - this.boundary.left),this.translateY);
+                return false;
               }
+              //将treeLst还原，新push元素到panelLst
+              let newObj = JSON.parse(JSON.stringify(this.vue.$store.state.treeLst[this.index])),
+              oldObj = JSON.parse(JSON.stringify(newObj));
+
+              oldObj['x'] = 0;
+              oldObj['y'] = 0;
+
+              let x = event.pageX - this.boundary.left - this.offsetX;
+              newObj['x'] = x> 0 ? x : 0;
+              newObj['y'] = event.pageY - this.boundary.top - this.offsetY;
+
+              this.vue.$store.dispatch("updatetreelst",{index:this.index,item:oldObj})
+              this.vue.$store.dispatch("addpanellst",{item:newObj})
+              // this.vue.$store.state.panelLst.push(newObj);
+              // this.vue.$store.state.treeLst.splice(this.index,1,oldObj);
           }
-        document.removeEventListener('mousemove', _move)
-        document.removeEventListener('mouseup', _end)
       }
   }
 
@@ -90,7 +104,10 @@ class Drag {
     let item = lst[this.index];
     item['x'] = x;
     item['y'] = y;
-    lst.splice(this.index,1,item);
+    
+    let update = this.panel ? "updatepanellst" : "updatetreelst";
+
+      this.vue.$store.dispatch(update,{index:this.index,item:item})
   }
 }
 
