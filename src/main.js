@@ -6,8 +6,16 @@ import router from './router'
 import store from './vuex'
 
 import 'normalize.css'
+import Drag from './js/drag'
 
 Vue.config.productionTip = false
+
+Vue.directive('drag', {
+  bind: function (el, binding) {
+    new Drag(el,binding);
+  }
+})
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
