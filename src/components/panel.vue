@@ -1,7 +1,6 @@
 <template>
   <ul class="panel">
     <li v-for="(item,index) in panel" v-drag="{panel:true,index:index,vue:Vue,x:item.x,y:item.y}" :style="{transform:`translate(${item.x}px,${item.y}px)`}">
-      <span>{{item.x}},{{item.y}}</span>
       <span>{{item.name}}</span>
     </li>
   </ul>
