@@ -17,5 +17,6 @@ export default {
                 name: 'item4'
             }
         ],
-        panelLst: []
+        panelLst: [],
+        lineLst: []
 }

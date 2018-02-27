@@ -1,8 +1,25 @@
 .panel{
+    position: relative;
     box-sizing: border-box;
     padding: 0;
     margin: 0;
-    li{
-        position: absolute;
+    ul{
+        height: 100%;
+        padding: 0;
+        margin: 0;
+        li{
+            position: absolute;
+            z-index: 1;
+        }
+    }
+}
+.svgLineGroup{
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    line{
+        stroke: #aaa;
+        stroke-width: 2
     }
 }

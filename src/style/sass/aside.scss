@@ -1,5 +1,16 @@
 li{
-    width: 80px;
+    display: flex;
+    width: 120px;
     margin: 0;
-    background: #ccc
+    background: #ccc;
+    span{
+        flex: 1;
+        text-align: center
+    }
+    a{
+        cursor: pointer;
+    }
+}
+aside li a{
+    visibility: hidden;
 }
