@@ -82,9 +82,9 @@ class Drag {
           panelItem['y'] = 0;
         }
 
-        panelItem['line'] = [];//存放line
+        panelItem['line'] = []; //存放line
 
-        this.setLinePosition(x,y,panelItem);
+        this.setLinePosition(x, y, panelItem);
 
         //将treeLst还原，新push元素到panelLst
         this.vue.$store.dispatch("updatetreelst", {
@@ -102,6 +102,13 @@ class Drag {
     this.aside_width = document.getElementsByTagName('aside')[0].offsetWidth;
     this.panel_width = document.getElementsByClassName('panel')[0].offsetWidth;
     this.panel_height = document.getElementsByClassName('panel')[0].offsetHeight;
+    let obj = {
+      header_height: this.header_height,
+      aside_width: this.aside_width,
+      panel_width: this.panel_width,
+      panel_height: this.panel_height
+    }
+    sessionStorage.setItem('boundary',JSON.stringify(obj))
   }
   setTranslate(pos) {
     this.currentX = pos.x; //当前位置
@@ -114,25 +121,25 @@ class Drag {
       this.translateY = (this.sourceY + distanceY).toFixed();
 
     if (!this.getRange()) return;
-    this.setData(this.translateX, this.translateY,this.start,this.end);
+    this.setData(this.translateX, this.translateY, this.start, this.end);
   }
 
-  setLinePosition(x,y,item){
+  setLinePosition(x, y, item) {
     item['start'] = {};
     item['end'] = {};
     item['end']['x'] = parseInt(x);
-    item['end']['y'] = parseInt(y) + this.el.offsetHeight/2;
+    item['end']['y'] = parseInt(y) + this.el.offsetHeight / 2;
     item['start']['x'] = parseInt(x) + this.el.offsetWidth;
-    item['start']['y'] = parseInt(y) + this.el.offsetHeight/2;
+    item['start']['y'] = parseInt(y) + this.el.offsetHeight / 2;
   }
 
-  setData(x,y,start,end){ //el属于tree or panel
+  setData(x, y, start, end) { //el属于tree or panel
     let lst = this.panel ? this.vue.$store.state.panelLst : this.vue.$store.state.treeLst;
     let item = lst[this.index];
     item['x'] = parseInt(x);
     item['y'] = parseInt(y);
 
-    this.setLinePosition(x,y,item);
+    this.setLinePosition(x, y, item);
 
     let update = this.panel ? "updatepanellst" : "updatetreelst";
 

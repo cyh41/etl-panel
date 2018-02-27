@@ -20,6 +20,16 @@ export default {
       id: id
     })
   },
+  DRAWLINELST(state,obj){
+    let index = obj.index;
+    let line = state.lineLst[index];
+    line['x2'] = obj.x;
+    line['y2'] = obj.y;
+    state.lineLst.splice(index,1,line);
+  },
+  ENDLINELST(state,obj){
+
+  },
   UPDATELINELST(state,obj){//根据拖拽更新线条
     let index = obj.index;
     let line = state.lineLst;
@@ -32,5 +42,9 @@ export default {
         line[i].y1 = obj.item.end.y;
       }
     }
+  },
+  DELETELINELST(state,obj){
+    let index = obj.index;
+    state.lineLst.splice(index,1);
   }
 }

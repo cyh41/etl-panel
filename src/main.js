@@ -12,7 +12,7 @@ Vue.config.productionTip = false
 
 Vue.directive('drag', {
   bind: function (el, binding) {
-    new Drag(el,binding);
+    let drag = new Drag(el,binding);
   }
 })
 

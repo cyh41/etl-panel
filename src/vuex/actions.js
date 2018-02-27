@@ -14,7 +14,16 @@ export default {
         startlinelst({commit},obj){
             commit("STARTLINELST",obj)
         },
+        drawlinelst({commit},obj){
+            commit("DRAWLINELST",obj)
+        },
+        endlinelst({commit},obj){
+            commit("ENDLINELST",obj)
+        },
         updatelinelst({commit},obj){
             commit("UPDATELINELST",obj)
+        },
+        deletelinelst({commit},obj){
+            commit("DELETELINELST",obj)
         }
 }
