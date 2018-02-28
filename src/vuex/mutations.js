@@ -23,12 +23,15 @@ export default {
     })
   },
   DRAWLINELST(state,obj){
-    let index = obj.index;
-    let line = state.lineLst[index];
-    line['x2'] = obj.x;
-    line['y2'] = obj.y;
-    if(obj.endIndex || parseInt(obj.endIndex) === 0)line['endIndex'] = obj.endIndex;
-    state.lineLst.splice(index,1,line);
+    let id = obj.id;
+    state.lineLst.some((v,index) =>{
+      if(parseInt(v.id) === parseInt(id)){
+        v['x2'] = obj.x;
+        v['y2'] = obj.y;
+        if(obj.endIndex || parseInt(obj.endIndex) === 0)v['endIndex'] = obj.endIndex;
+        state.lineLst.splice(index,1,v);
+      }
+    })
   },
   UPDATELINELST(state,obj){//根据拖拽更新线条
     let index = obj.index;
@@ -44,7 +47,11 @@ export default {
     }
   },
   DELETELINELST(state,obj){
-    let index = obj.index;
-    state.lineLst.splice(index,1);
+    let id = obj.id;
+    state.lineLst.some((v,i) =>{
+      if(parseInt(v.id) === parseInt(id)){
+        state.lineLst.splice(i,1)
+      }
+    })
   }
 }

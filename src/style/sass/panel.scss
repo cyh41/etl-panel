@@ -23,6 +23,9 @@
     height: 100%;
     line{
         stroke: #aaa;
-        stroke-width: 2
+        stroke-width: 2;
+        &:hover{
+            stroke: aquamarine;
+        }
     }
 }
