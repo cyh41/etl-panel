@@ -10,6 +10,9 @@
         li{
             position: absolute;
             z-index: 1;
+            &>a:first-of-type:not(.line-head){
+                color: #aaa;
+            }
         }
     }
 }

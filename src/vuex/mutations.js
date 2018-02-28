@@ -25,6 +25,7 @@ export default {
     let line = state.lineLst[index];
     line['x2'] = obj.x;
     line['y2'] = obj.y;
+    if(obj.endIndex)line['endIndex'] = obj.endIndex;
     state.lineLst.splice(index,1,line);
   },
   ENDLINELST(state,obj){
@@ -38,8 +39,8 @@ export default {
         line[i].x1 = obj.item.start.x;
         line[i].y1 = obj.item.start.y;
       } else if(line[i].endIndex == obj.index){
-        line[i].x1 = obj.item.end.x;
-        line[i].y1 = obj.item.end.y;
+        line[i].x2 = obj.item.end.x;
+        line[i].y2 = obj.item.end.y;
       }
     }
   },

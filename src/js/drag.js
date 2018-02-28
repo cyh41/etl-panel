@@ -74,7 +74,6 @@ class Drag {
         panelItem['x'] = x > 0 ? x : 0;
         panelItem['y'] = y > 0 ? y : 0;
 
-        console.log(this.currentX,this.el_right)
         panelItem['x'] = this.currentX + this.el_right <= this.panel_width + this.aside_width ? x : this.panel_width - this.el.offsetWidth - 1;
 
         panelItem['y'] = this.currentY + this.el_bottom <= this.header_height + this.panel_height ? y : this.panel_height - this.el.offsetHeight - 2;
@@ -84,6 +83,7 @@ class Drag {
         }
 
         panelItem['line'] = []; //存放line
+        panelItem['endItem'] = [];//存放尾部关联
 
         this.setLinePosition(x, y, panelItem);
 
