@@ -17,6 +17,8 @@ export default {
       startIndex: obj.index,
       x1: x1,
       y1: y1,
+      x2: x1,
+      y2: y1,
       id: id
     })
   },
@@ -25,11 +27,8 @@ export default {
     let line = state.lineLst[index];
     line['x2'] = obj.x;
     line['y2'] = obj.y;
-    if(obj.endIndex)line['endIndex'] = obj.endIndex;
+    if(obj.endIndex || parseInt(obj.endIndex) === 0)line['endIndex'] = obj.endIndex;
     state.lineLst.splice(index,1,line);
-  },
-  ENDLINELST(state,obj){
-
   },
   UPDATELINELST(state,obj){//根据拖拽更新线条
     let index = obj.index;
