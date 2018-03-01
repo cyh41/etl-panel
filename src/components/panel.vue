@@ -1,10 +1,11 @@
 <template>
   <div class="panel">
     <ul>
-      <li v-for="(item,index) in panel" v-drag="{panel:true,index:index,vue:Vue}" :style="{transform:`translate(${item.x}px,${item.y}px)`}">
-        <a :class="{'line-head': lineHead(index)}" :data-index="index" @mousedown.stop>头部</a>
+      <li v-for="(item,index) in panel" v-drag="{id:item.id,vue:Vue}" :style="{transform:`translate(${item.x}px,${item.y}px)`}">
+        <a :class="{'line-head': lineHead(index)}" :data-id="item.id" @mousedown.stop>头部</a>
         <span>{{item.name}}</span>
         <a @mousedown.stop="startLine(index,item.start,item.end)">尾部</a>
+        <a @click="deleteItem(item.id)">x</a>
       </li>
     </ul>
     <svg class="svgLineGroup">
@@ -111,7 +112,6 @@
 
         function splice(l, idx) {
           l.some((v, i) => {
-            console.log(v,idx)
             if (parseInt(v) === parseInt(idx)) {
               l.splice(i, 1)
             }
@@ -128,6 +128,20 @@
         this.$store.dispatch('deletelinelst', {
           id: item.id
         })
+      },
+      deleteItem(index){
+        console.log(index)
+        let item = this.$store.state.panelLst[index];
+        let self = this;
+        let [...itemLine] = item.line;
+        itemLine.forEach(v1 => {
+        this.line.some(v2 => {
+            if(parseInt(v2.id) === parseInt(v1)){
+              self.deleteLine.call(self,v2);
+            }
+          })
+        });
+        this.$store.dispatch('deletepanellst', index)
       }
     },
     computed: {

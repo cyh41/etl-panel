@@ -13,6 +13,11 @@
             &>a:first-of-type:not(.line-head){
                 color: #aaa;
             }
+            &>a:last-of-type{
+                position: absolute;
+                right: 0;
+                top: -15px;
+            }
         }
     }
 }

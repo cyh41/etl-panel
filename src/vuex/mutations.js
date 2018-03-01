@@ -1,6 +1,11 @@
 export default {
   UPDATEPANELLST(state, obj) {
-    state.panelLst.splice(obj.index, 1, obj.item)
+    let id = obj.id;
+    state.panelLst.some((v,i) => {
+      if(id === v.id){
+        state.panelLst.splice(i, 1, obj.item)
+      }
+    })
   },
   UPDATETREELST(state, obj) {
     state.treeLst.splice(obj.index, 1, obj.item)
@@ -53,5 +58,8 @@ export default {
         state.lineLst.splice(i,1)
       }
     })
+  },
+  DELETEPANELLST(state,index){
+    state.panelLst.splice(index,1)
   }
 }

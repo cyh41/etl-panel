@@ -25,5 +25,8 @@ export default {
         },
         deletelinelst({commit},obj){
             commit("DELETELINELST",obj)
+        },
+        deletepanellst({commit},index){
+            commit("DELETEPANELLST",index)
         }
 }
