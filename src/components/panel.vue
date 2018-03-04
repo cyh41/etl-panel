@@ -2,9 +2,9 @@
   <div class="panel">
     <ul>
       <li v-for="(item,index) in panel" v-drag="{id:item.id,vue:Vue}" :style="{transform:`translate(${item.x}px,${item.y}px)`}">
-        <a :class="{'line-head': lineHead(index)}" :data-id="item.id" @mousedown.stop>头部</a>
+        <a :class="{'line-head': lineHead(item.id)}" :data-id="item.id" @mousedown.stop>头部</a>
         <span>{{item.name}}</span>
-        <a @mousedown.stop="startLine(index,item.start,item.end)">尾部</a>
+        <a @mousedown.stop="startLine(item.id,item.start,item.end)">尾部</a>
         <a @click="deleteItem(item.id)">x</a>
       </li>
     </ul>
@@ -21,21 +21,22 @@
 
   export default ({
     methods: {
-      startLine(startIndex) {
-        let len = this.line.length,
-        id = len ? parseInt(this.line[len-1].id) +1 : 0;
+      startLine(startId) {
+        let line = this.line,
+          lineLen = this.line.length,
+          idNumber = lineLen ? parseInt(line[lineLen - 1].id.substr(1)) : -1;
+        let id = 'l' + (idNumber + 1);
         this.$store.dispatch('startlinelst', {
-          index: startIndex,
+          startId: startId,
           id: id
         })
-        let panelItem = this.$store.state.panelLst[startIndex];
-        panelItem.line.push(len);//将新增的line加到line里面
-
+        
+        let panelItem = this.getVal(this.$store.state.panelLst,startId);
         this.$store.dispatch('updatepanellst', {
-          index: startIndex,
+          id: startId,
           item: panelItem
-        })
-        this.inDraw = startIndex;
+        });
+        this.inDraw = startId;
         this.isEnd = panelItem.endItem;
         let el_panel = document.getElementsByClassName('panel')[0];
 
@@ -46,11 +47,10 @@
         document.addEventListener('mouseup', end, false);
 
         function drawLine(event) { //线跟着鼠标走
-          if (!this.inDraw && this.inDraw != 0) return;
+          if (!this.inDraw) return;
           let boundary = JSON.parse(sessionStorage.getItem('boundary'));
           let x = event.pageX - boundary.aside_width,
             y = event.pageY - boundary.header_height;
-          let id = len ? this.$store.state.lineLst[len].id : 0;
           this.$store.dispatch('drawlinelst', {
             x: x,
             y: y,
@@ -61,26 +61,32 @@
         function endLine(event) {
           el_panel.removeEventListener('mousemove', draw, false);
           document.removeEventListener('mouseup', end, false);
-          let lineIndex = this.line.length - 1;
           if (event.target.className == 'line-head') {
             let line_head = event.target;
-            let index = line_head.getAttribute('data-index');
-            let panel = this.panel[index];
-            let startIndex = this.inDraw;
-            this.$store.state.panelLst[startIndex]['endItem'].push(index);
+            let endId = line_head.getAttribute('data-id');
+            let endPanel = this.getVal(this.panel,endId),
+            startPanel = this.getVal(this.panel,startId);
 
-            let panelItem = this.$store.state.panelLst[index];
-            panelItem.line.push(id);
-
-            this.$store.dispatch('drawlinelst', {
-              x: panel.end.x,
-              y: panel.end.y,
-              endIndex: parseInt(index),
-              id: this.$store.state.lineLst[lineIndex].id
+            startPanel['endItem'].push(endId)
+            startPanel['line'].push(id)
+            endPanel['line'].push(id)
+            this.$store.dispatch('drawlinelst', {//最终位置
+              x: endPanel.end.x,
+              y: endPanel.end.y,
+              endId: endId,
+              id: id
             })
+            this.$store.dispatch('updatepanellst',{
+              id: startId,
+              item: startPanel
+            })
+            // this.$store.dispatch('updatepanellst',{
+            //   id: endId,
+            //   item: endPanel
+            // })
           } else {
-            this.$store.dispatch('deletelinelst', {
-              id: this.$store.state.lineLst[lineIndex].id
+            this.$store.dispatch('deletelinelst', {//没在最终位置则删除线
+              id: id
             })
           }
           this.inDraw = '';
@@ -129,19 +135,29 @@
           id: item.id
         })
       },
-      deleteItem(index){
+      deleteItem(index) {
         console.log(index)
         let item = this.$store.state.panelLst[index];
         let self = this;
         let [...itemLine] = item.line;
         itemLine.forEach(v1 => {
-        this.line.some(v2 => {
-            if(parseInt(v2.id) === parseInt(v1)){
-              self.deleteLine.call(self,v2);
+          this.line.some(v2 => {
+            if (parseInt(v2.id) === parseInt(v1)) {
+              self.deleteLine.call(self, v2);
             }
           })
         });
         this.$store.dispatch('deletepanellst', index)
+      },
+      getVal(lst, id) {
+        let self = this,
+          val;
+        lst.some(v => {
+          if (v.id === id) {
+            val = v;
+          }
+        });
+        return val;
       }
     },
     computed: {

@@ -14,12 +14,13 @@ export default {
     state.panelLst.push(obj.item)
   },
   STARTLINELST(state, obj) {
-    let panelItem = state.panelLst[obj.index],
+    let panelItem = getVal(state.panelLst,obj.startId),
       x1 = panelItem.start.x,
       y1 = panelItem.start.y,
-      id = obj.id;
+      startId = obj.startId,
+      id =obj.id;
     state.lineLst.push({
-      startIndex: obj.index,
+      startId: startId,
       x1: x1,
       y1: y1,
       x2: x1,
@@ -29,32 +30,37 @@ export default {
   },
   DRAWLINELST(state,obj){
     let id = obj.id;
-    state.lineLst.some((v,index) =>{
-      if(parseInt(v.id) === parseInt(id)){
+    state.lineLst.some((v,i) =>{
+      if(v.id === id){
         v['x2'] = obj.x;
         v['y2'] = obj.y;
+        v['endId'] = obj.endId;
         if(obj.endIndex || parseInt(obj.endIndex) === 0)v['endIndex'] = obj.endIndex;
-        state.lineLst.splice(index,1,v);
+        state.lineLst.splice(i,1,v);
       }
     })
   },
   UPDATELINELST(state,obj){//根据拖拽更新线条
-    let index = obj.index;
+    let item = obj.item,
+    id = item.id;
+
     let line = state.lineLst;
-    for(let i=0,len=line.length;i<len;i++){
-      if(line[i].startIndex == obj.index){
-        line[i].x1 = obj.item.start.x;
-        line[i].y1 = obj.item.start.y;
-      } else if(line[i].endIndex == obj.index){
-        line[i].x2 = obj.item.end.x;
-        line[i].y2 = obj.item.end.y;
-      }
-    }
+      line.some((v,j) => {
+        if(v.startId === id){
+          v.x1 = item.start.x;
+          v.y1 = item.start.y;
+          line.splice(j,1,v);
+        }else if(v.endId === id){
+          v.x2 = item.end.x;
+          v.y2 = item.end.y;
+          line.splice(j,1,v);
+        }
+      })
   },
   DELETELINELST(state,obj){
     let id = obj.id;
     state.lineLst.some((v,i) =>{
-      if(parseInt(v.id) === parseInt(id)){
+      if(v.id === id){
         state.lineLst.splice(i,1)
       }
     })
@@ -62,4 +68,14 @@ export default {
   DELETEPANELLST(state,index){
     state.panelLst.splice(index,1)
   }
+}
+
+function getVal(lst,id) {
+  let self = this,val;
+  lst.some(v =>{
+    if(v.id === id){
+      val = v;
+    }
+  });
+  return val;
 }
