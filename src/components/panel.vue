@@ -107,47 +107,48 @@
         }
       },
       deleteLine(item) {
-        let startIndex = item.startIndex,
-          endIndex = item.endIndex;
-        let start = this.$store.state.panelLst[startIndex],
-          end = this.$store.state.panelLst[endIndex];
+        console.log(item)
+        let startId = item.startId,
+          endId = item.endId;
+        let start = this.getVal(this.panel,startId),
+          end = this.getVal(this.panel,endId);
 
-        splice(start.endItem, endIndex)
+          console.log(start, end)
+        splice(start.endItem, endId)
         splice(start.line, item.id);
         splice(end.line, item.id);
 
-        function splice(l, idx) {
+        function splice(l, id) {
           l.some((v, i) => {
-            if (parseInt(v) === parseInt(idx)) {
+            if (v === id) {
               l.splice(i, 1)
             }
           })
         }
         this.$store.dispatch('updatepanellst', {
-          index: startIndex,
+          id: startId,
           item: start
         })
         this.$store.dispatch('updatepanellst', {
-          index: endIndex,
+          id: endId,
           item: end
         })
         this.$store.dispatch('deletelinelst', {
           id: item.id
         })
       },
-      deleteItem(index) {
-        console.log(index)
-        let item = this.$store.state.panelLst[index];
+      deleteItem(id) {
+        let item = this.getVal(this.panel,id);
         let self = this;
-        let [...itemLine] = item.line;
+        let [...itemLine] = item.line;//拷贝包含的线的数组
         itemLine.forEach(v1 => {
           this.line.some(v2 => {
-            if (parseInt(v2.id) === parseInt(v1)) {
+            if (v2.id === v1) {
               self.deleteLine.call(self, v2);
             }
           })
         });
-        this.$store.dispatch('deletepanellst', index)
+        this.$store.dispatch('deletepanellst', id)
       },
       getVal(lst, id) {
         let self = this,

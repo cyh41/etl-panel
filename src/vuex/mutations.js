@@ -65,8 +65,12 @@ export default {
       }
     })
   },
-  DELETEPANELLST(state,index){
-    state.panelLst.splice(index,1)
+  DELETEPANELLST(state,id){
+    state.panelLst.some((v,i) =>{
+      if(v.id === id){
+        state.panelLst.splice(i,1)
+      }
+    })
   }
 }
 
