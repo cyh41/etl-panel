@@ -1,4 +1,8 @@
 .panel{
+    a{
+        position: relative;
+        z-index: 100;
+    }
     position: relative;
     box-sizing: border-box;
     padding: 0;

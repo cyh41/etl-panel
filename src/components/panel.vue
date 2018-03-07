@@ -1,11 +1,18 @@
 <template>
   <div class="panel">
-    <ul>
-      <li v-for="(item,index) in panel" v-drag="{id:item.id,vue:Vue}" :style="{transform:`translate(${item.x}px,${item.y}px)`}">
-        <a :class="{'line-head': lineHead(item.id)}" :data-id="item.id" @mousedown.stop>头部</a>
-        <span>{{item.name}}</span>
-        <a @mousedown.stop="startLine(item.id,item.start,item.end)">尾部</a>
-        <a @click="deleteItem(item.id)">x</a>
+    <ul v-drag="{vue:Vue}">
+      <li v-for="(item,index) in panel"
+          :data-id="item.id"
+          :data-x="item.x"
+          :data-y="item.y"
+          :data-start="item.start"
+          :data-end="item.end"
+          :style="{transform:`translate(${item.x}px,${item.y}px)`}">
+        <a :class="{'line-head': lineHead(item.id)}"
+           :data-id="item.id">{{item.id}}</a>
+        <span class="drag" :data-id="item.id">{{item.name}}</span>
+        <a class="startLine">尾部</a>
+        <a @mouseup.stop="deleteItem($event,item.id)" class="close">x</a>
       </li>
     </ul>
     <svg class="svgLineGroup">
@@ -80,10 +87,6 @@
               id: startId,
               item: startPanel
             })
-            // this.$store.dispatch('updatepanellst',{
-            //   id: endId,
-            //   item: endPanel
-            // })
           } else {
             this.$store.dispatch('deletelinelst', {//没在最终位置则删除线
               id: id
@@ -107,13 +110,11 @@
         }
       },
       deleteLine(item) {
-        console.log(item)
         let startId = item.startId,
           endId = item.endId;
         let start = this.getVal(this.panel,startId),
           end = this.getVal(this.panel,endId);
 
-          console.log(start, end)
         splice(start.endItem, endId)
         splice(start.line, item.id);
         splice(end.line, item.id);
@@ -137,7 +138,7 @@
           id: item.id
         })
       },
-      deleteItem(id) {
+      deleteItem(event,id) {
         let item = this.getVal(this.panel,id);
         let self = this;
         let [...itemLine] = item.line;//拷贝包含的线的数组
@@ -149,6 +150,7 @@
           })
         });
         this.$store.dispatch('deletepanellst', id)
+        this.$forceUpdate()
       },
       getVal(lst, id) {
         let self = this,
@@ -173,7 +175,10 @@
       return {
         Vue: this,
         inDraw: '',
-        isEnd: []
+        isEnd: [],
+        aa:[
+          {text:1},{text:2},{text:3},{text:4},{text:5},{text:6},
+        ]
       }
     }
   })

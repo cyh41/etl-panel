@@ -11,9 +11,9 @@ import Drag from './js/drag'
 Vue.config.productionTip = false
 
 Vue.directive('drag', {
-  bind: function (el, binding) {
+  inserted: function (el, binding) {
     let drag = new Drag(el,binding);
-  }
+  },
 })
 
 /* eslint-disable no-new */
