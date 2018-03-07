@@ -30,14 +30,13 @@ class Drag {
       this.el = target.tagName.toLowerCase() === "li" ? target : target.parentNode;
       this.el = this.el.nodeName.toLowerCase() === "li" ? this.el : this.el.parentNode;
 
-      if (target.classList.contains("startLine")) {
+      if (target.classList.contains("startLine")) {//点击尾部
         this.panel = this.vue.$store.state.panelLst;
         let line = this.vue.$store.state.lineLst,
           lineLen = line.length,
           idNumber = lineLen ? parseInt(line[lineLen - 1].id.substr(1)) : -1;
         let id = 'l' + (idNumber + 1),
         startId = this.el.getAttribute("data-id");
-        console.log(startId)
         this.vue.$store.dispatch('startlinelst', {
           startId: startId,
           id: id
@@ -103,6 +102,20 @@ class Drag {
         return;
       }
 
+      if(event.target.classList.contains("close")){
+        let id = this.el.getAttribute("data-id");
+        let item = this.getVal(this.vue.panel,id);
+        let self = this.vue;
+        let [...itemLine] = item.line;//拷贝包含的线的数组
+        itemLine.forEach(v1 => {
+          this.vue.line.some(v2 => {
+            if (v2.id === v1) {
+              self.deleteLine.call(self, null,v2.id);
+            }
+          })
+        });
+        this.vue.$store.dispatch('deletepanellst', id)
+      }
       if (this.tree) {
         this.startIndex = this.el.getAttribute("data-index");
       } else {

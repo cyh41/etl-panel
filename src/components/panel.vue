@@ -15,8 +15,8 @@
         <a @mouseup.stop="deleteItem($event,item.id)" class="close">x</a>
       </li>
     </ul>
-    <svg class="svgLineGroup">
-      <line v-for="(item,index) in line" @dblclick="deleteLine(item)" :x1="item.x1" :y1="item.y1" :x2="item.x2" :y2="item.y2" :data-id="item.id"
+    <svg class="svgLineGroup" @dblclick="deleteLine($event)" >
+      <line v-for="(item,index) in line" :x1="item.x1" :y1="item.y1" :x2="item.x2" :y2="item.y2" :data-id="item.id"
       />
     </svg>
   </div>
@@ -28,74 +28,6 @@
 
   export default ({
     methods: {
-      startLine(startId) {
-        let line = this.line,
-          lineLen = this.line.length,
-          idNumber = lineLen ? parseInt(line[lineLen - 1].id.substr(1)) : -1;
-        let id = 'l' + (idNumber + 1);
-        this.$store.dispatch('startlinelst', {
-          startId: startId,
-          id: id
-        })
-        
-        let panelItem = this.getVal(this.$store.state.panelLst,startId);
-        this.$store.dispatch('updatepanellst', {
-          id: startId,
-          item: panelItem
-        });
-        this.inDraw = startId;
-        this.isEnd = panelItem.endItem;
-        let el_panel = document.getElementsByClassName('panel')[0];
-
-        let draw = drawLine.bind(this),
-          end = endLine.bind(this);
-
-        el_panel.addEventListener('mousemove', draw, false);
-        document.addEventListener('mouseup', end, false);
-
-        function drawLine(event) { //线跟着鼠标走
-          if (!this.inDraw) return;
-          let boundary = JSON.parse(sessionStorage.getItem('boundary'));
-          let x = event.pageX - boundary.aside_width,
-            y = event.pageY - boundary.header_height;
-          this.$store.dispatch('drawlinelst', {
-            x: x,
-            y: y,
-            id: id
-          })
-        }
-
-        function endLine(event) {
-          el_panel.removeEventListener('mousemove', draw, false);
-          document.removeEventListener('mouseup', end, false);
-          if (event.target.className == 'line-head') {
-            let line_head = event.target;
-            let endId = line_head.getAttribute('data-id');
-            let endPanel = this.getVal(this.panel,endId),
-            startPanel = this.getVal(this.panel,startId);
-
-            startPanel['endItem'].push(endId)
-            startPanel['line'].push(id)
-            endPanel['line'].push(id)
-            this.$store.dispatch('drawlinelst', {//最终位置
-              x: endPanel.end.x,
-              y: endPanel.end.y,
-              endId: endId,
-              id: id
-            })
-            this.$store.dispatch('updatepanellst',{
-              id: startId,
-              item: startPanel
-            })
-          } else {
-            this.$store.dispatch('deletelinelst', {//没在最终位置则删除线
-              id: id
-            })
-          }
-          this.inDraw = '';
-          this.isEnd = [];
-        }
-      },
       lineHead(index) {
         let flag = true;
         if (index === parseInt(this.inDraw) || compare.call(this)) {
@@ -109,7 +41,15 @@
           })
         }
       },
-      deleteLine(item) {
+      deleteLine(event,id) {
+        let item;
+        if(!event){
+          item = this.getVal(this.line,id);
+        } else{
+          let target = event.target;
+          if(target.tagName === 'svg')return;
+          item = this.getVal(this.line,target.getAttribute("data-id"))
+        }
         let startId = item.startId,
           endId = item.endId;
         let start = this.getVal(this.panel,startId),
@@ -137,20 +77,6 @@
         this.$store.dispatch('deletelinelst', {
           id: item.id
         })
-      },
-      deleteItem(event,id) {
-        let item = this.getVal(this.panel,id);
-        let self = this;
-        let [...itemLine] = item.line;//拷贝包含的线的数组
-        itemLine.forEach(v1 => {
-          this.line.some(v2 => {
-            if (v2.id === v1) {
-              self.deleteLine.call(self, v2);
-            }
-          })
-        });
-        this.$store.dispatch('deletepanellst', id)
-        this.$forceUpdate()
       },
       getVal(lst, id) {
         let self = this,
