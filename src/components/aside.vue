@@ -1,16 +1,15 @@
 <template>
   <aside>
-    <ul v-drag="{vue:Vue,tree:true}" >
-      <li v-for="(item,index) in tree"
-      :data-x="item.x"
-      :data-y="item.y"
-      :data-index="index"
-      :style="{transform:`translate(${item.x}px,${item.y}px)`}">
-        <a>头部</a>
-        <span>{{item.name}}</span>
-        <a>尾部</a>
-      </li>
-    </ul>
+    <div v-drag="{vue:Vue,tree:true}">
+      <div v-for="(type,index) in tree">
+        <h3 class="item">{{type.name}}</h3>
+        <ul>
+          <li class="item" v-for="(item,index) in type.items" :data-x="item.x" :data-y="item.y" :data-index="index" :style="{transform:`translate(${item.x}px,${item.y}px)`}">
+            <icon :name="item.icon" :scale="20"></icon><span>{{item.name}}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
   </aside>
 </template>
 

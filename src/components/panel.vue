@@ -23,7 +23,6 @@
 </template>
 
 <script>
-  import Line from '../js/svgLine'
   import Drag from '../js/drag'
 
   export default ({

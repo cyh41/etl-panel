@@ -8,6 +8,9 @@ import store from './vuex'
 import 'normalize.css'
 import Drag from './js/drag'
 
+import Icon from 'vue-svg-icon/Icon.vue'
+Vue.component('icon',Icon)
+
 Vue.config.productionTip = false
 
 Vue.directive('drag', {
