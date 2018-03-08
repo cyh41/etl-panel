@@ -22,9 +22,9 @@ class Drag {
       _end = end.bind(this); //绑定this
 
     function start(event) {
-      const target = event.target,
+      let target = event.target,
       tagName = target.tagName.toLowerCase();
-      
+
       this.getBoundary.call(this); //获取各容器的宽高，用来计算边距
       
       if(this.tree){//点击树，判断元素
@@ -39,7 +39,6 @@ class Drag {
         }
         this.startIndex = this.el.getAttribute("data-index");
         this.startTypeIndex = this.el.getAttribute("data-typeIndex");
-        this.el.style.position = "absolute"
       } else{
         this.el = tagName === "li" ? this.el : target.parentNode;
         if(target.classList.contains("startLine")){//点击尾部
@@ -56,10 +55,8 @@ class Drag {
       this.startX = event.pageX;//初始点击位置
       this.startY = event.pageY;
 
-      let panelLst = this.vue.$store.state.panelLst;
-
       if (this.id) { //获取当前dom的数据在panel
-        this.lst = panelLst;
+        this.lst = this.vue.$store.state.panelLst;
         let self = this;
         this.lst.some(function (v) {
           if (v.id === self.id) {
@@ -78,20 +75,11 @@ class Drag {
       }
 
       //元素坐标
-      function getTop(e){
-         var offset=e.offsetTop;
-         if(e.offsetParent!=null) offset+=getTop(e.offsetParent);
-         return offset;
-        }
-        function getLeft(e){
-           var offset=e.offsetLeft;
-           if(e.offsetParent!=null) offset+=getLeft(e.offsetParent);
-           return offset;
-        }
+
 
       //鼠标到元素的左上边距
-      this.offsetX = this.startX - getLeft(this.el);
-      this.offsetY = this.startY - getTop(this.el);
+      this.offsetX = this.startX - this.el.getBoundingClientRect().left;//元素距离页面顶部的api
+      this.offsetY = event.offsetY;
 
       //鼠标到元素的右下边距
       this.offsetX2 = this.el.offsetWidth - this.offsetX;
@@ -101,7 +89,96 @@ class Drag {
       document.addEventListener('mouseup', _end, false)
     }
 
+          function clickStartline() {//点击尾部
+          this.panel = this.vue.$store.state.panelLst;
+          let line = this.vue.$store.state.lineLst,
+            lineLen = line.length,
+            idNumber = lineLen ? parseInt(line[lineLen - 1].id.substr(1)) : -1;
+          let id = 'l' + (idNumber + 1),
+          startId = this.el.getAttribute("data-id");
+          this.vue.$store.dispatch('startlinelst', {
+            startId: startId,
+            id: id
+          })
+  
+          let panelItem = this.getVal(this.panel, startId);
+          this.vue.$store.dispatch('updatepanellst', {
+            id: startId,
+            item: panelItem
+          });
+          this.vue.inDraw = startId;
+          this.vue.isEnd = panelItem.endItem;
+          let el_panel = document.getElementsByClassName('panel')[0];
+  
+          let draw = drawLine.bind(this),
+            end = endLine.bind(this);
+  
+          el_panel.addEventListener('mousemove', draw, false);
+          document.addEventListener('mouseup', end, false);
+  
+          function drawLine(event) { //线跟着鼠标走
+            if (!this.vue.inDraw) return;
+            let boundary = JSON.parse(sessionStorage.getItem('boundary'));
+            let x = event.pageX - boundary.aside_width,
+              y = event.pageY - boundary.header_height;
+            this.vue.$store.dispatch('drawlinelst', {
+              x: x,
+              y: y,
+              id: id
+            })
+          }
+  
+          function endLine(event) {
+            el_panel.removeEventListener('mousemove', draw, false);
+            document.removeEventListener('mouseup', end, false);
+            if (event.target.className == 'line-head') {
+              let line_head = event.target;
+              let endId = line_head.getAttribute('data-id');
+              let endPanel = this.getVal(this.panel, endId),
+                startPanel = this.getVal(this.panel, startId);
+  
+              startPanel['endItem'].push(endId)
+              startPanel['line'].push(id)
+              endPanel['line'].push(id)
+              this.vue.$store.dispatch('drawlinelst', { //最终位置
+                x: endPanel.end.x,
+                y: endPanel.end.y,
+                endId: endId,
+                id: id
+              })
+              this.vue.$store.dispatch('updatepanellst', {
+                id: startId,
+                item: startPanel
+              })
+            } else {
+              this.vue.$store.dispatch('deletelinelst', { //没在最终位置则删除线
+                id: id
+              })
+            }
+            this.vue.inDraw = '';
+            this.vue.isEnd = [];
+          }
+          return;
+      }
+
+      function clickClose() {
+        let id = this.el.getAttribute("data-id");
+        let item = this.getVal(this.vue.panel,id);
+        let self = this.vue;
+        let [...itemLine] = item.line;//拷贝包含的线的数组
+        itemLine.forEach(v1 => {
+          this.vue.line.some(v2 => {
+            if (v2.id === v1) {
+              self.deleteLine.call(self, null,v2.id);
+            }
+          })
+        });
+        this.vue.$store.dispatch('deletepanellst', id);
+        return;
+      }
+
     function move(event) {
+      if(!this.id)this.el.style.position = "absolute";
       this.setTranslate({
         x: event.pageX,
         y: event.pageY
@@ -111,9 +188,9 @@ class Drag {
     function end(event) {
       document.removeEventListener('mousemove', _move)
       document.removeEventListener('mouseup', _end)
-      this.el.style.position = "static";
-      
+
       if (!this.id) { //从备选面板到备选面板则回归原来位置
+        this.el.style.position = "static";
         if (this.currentX - this.offsetX < this.aside_width) {
           this.setData(0, 0);
           return false;
@@ -142,6 +219,7 @@ class Drag {
 
         panelItem['y'] = this.currentY + this.offsetY2 <= this.header_height + this.panel_height ? y : this.panel_height - this.el.offsetHeight - 2;
 
+        console.log(this.currentY - this.offsetY)
         if (this.currentY - this.offsetY < this.header_height) {
           panelItem['y'] = 0;
         }
@@ -228,108 +306,18 @@ class Drag {
       })
     }
   }
+  
 
   getRange() { //是否超出范围
-    let flag = true;
     if (this.currentY - this.offsetY <= this.header_height || this.currentX + this.offsetX2 >= this.aside_width + this.panel_width || this.currentY + this.offsetY2 >= this.panel_height + this.header_height) { //范围
-      flag = false;
+      return false;
     }
 
     if (this.id && this.currentX - this.offsetX <= this.aside_width) {
-      flag = false;
+      return false
     }
-    return flag;
+    return true;
   }
 }
 
 export default Drag;
-
-
-
-      // function clickStartline() {//点击尾部
-      //     this.panel = this.vue.$store.state.panelLst;
-      //     let line = this.vue.$store.state.lineLst,
-      //       lineLen = line.length,
-      //       idNumber = lineLen ? parseInt(line[lineLen - 1].id.substr(1)) : -1;
-      //     let id = 'l' + (idNumber + 1),
-      //     startId = this.el.getAttribute("data-id");
-      //     this.vue.$store.dispatch('startlinelst', {
-      //       startId: startId,
-      //       id: id
-      //     })
-  
-      //     let panelItem = this.getVal(this.panel, startId);
-      //     this.vue.$store.dispatch('updatepanellst', {
-      //       id: startId,
-      //       item: panelItem
-      //     });
-      //     this.vue.inDraw = startId;
-      //     this.vue.isEnd = panelItem.endItem;
-      //     let el_panel = document.getElementsByClassName('panel')[0];
-  
-      //     let draw = drawLine.bind(this),
-      //       end = endLine.bind(this);
-  
-      //     el_panel.addEventListener('mousemove', draw, false);
-      //     document.addEventListener('mouseup', end, false);
-  
-      //     function drawLine(event) { //线跟着鼠标走
-      //       if (!this.vue.inDraw) return;
-      //       let boundary = JSON.parse(sessionStorage.getItem('boundary'));
-      //       let x = event.pageX - boundary.aside_width,
-      //         y = event.pageY - boundary.header_height;
-      //       this.vue.$store.dispatch('drawlinelst', {
-      //         x: x,
-      //         y: y,
-      //         id: id
-      //       })
-      //     }
-  
-      //     function endLine(event) {
-      //       el_panel.removeEventListener('mousemove', draw, false);
-      //       document.removeEventListener('mouseup', end, false);
-      //       if (event.target.className == 'line-head') {
-      //         let line_head = event.target;
-      //         let endId = line_head.getAttribute('data-id');
-      //         let endPanel = this.getVal(this.panel, endId),
-      //           startPanel = this.getVal(this.panel, startId);
-  
-      //         startPanel['endItem'].push(endId)
-      //         startPanel['line'].push(id)
-      //         endPanel['line'].push(id)
-      //         this.vue.$store.dispatch('drawlinelst', { //最终位置
-      //           x: endPanel.end.x,
-      //           y: endPanel.end.y,
-      //           endId: endId,
-      //           id: id
-      //         })
-      //         this.vue.$store.dispatch('updatepanellst', {
-      //           id: startId,
-      //           item: startPanel
-      //         })
-      //       } else {
-      //         this.vue.$store.dispatch('deletelinelst', { //没在最终位置则删除线
-      //           id: id
-      //         })
-      //       }
-      //       this.vue.inDraw = '';
-      //       this.vue.isEnd = [];
-      //     }
-      //     return;
-      // }
-
-      // function clickClose() {
-      //   let id = this.el.getAttribute("data-id");
-      //   let item = this.getVal(this.vue.panel,id);
-      //   let self = this.vue;
-      //   let [...itemLine] = item.line;//拷贝包含的线的数组
-      //   itemLine.forEach(v1 => {
-      //     this.vue.line.some(v2 => {
-      //       if (v2.id === v1) {
-      //         self.deleteLine.call(self, null,v2.id);
-      //       }
-      //     })
-      //   });
-      //   this.vue.$store.dispatch('deletepanellst', id);
-      //   return;
-      // }
