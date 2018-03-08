@@ -8,7 +8,7 @@ export default {
     })
   },
   UPDATETREELST(state, obj) {
-    state.treeLst.splice(obj.index, 1, obj.item)
+    state.treeLst[obj.typeindex]["items"].splice(obj.index, 1, obj.item)
   },
   ADDPANELLST(state, obj) {
     state.panelLst.push(obj.item)

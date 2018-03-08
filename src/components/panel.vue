@@ -8,9 +8,8 @@
           :data-start="item.start"
           :data-end="item.end"
           :style="{transform:`translate(${item.x}px,${item.y}px)`}">
-        <a :class="{'line-head': lineHead(item.id)}"
-           :data-id="item.id">{{item.id}}</a>
-        <span class="drag" :data-id="item.id">{{item.name}}</span>
+        <a :class="{'line-head': lineHead(item.id)}">头部</a>
+        <span class="drag">{{item.name}}</span>
         <a class="startLine">尾部</a>
         <a @mouseup.stop="deleteItem($event,item.id)" class="close">x</a>
       </li>

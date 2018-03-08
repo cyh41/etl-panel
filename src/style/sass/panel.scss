@@ -1,27 +1,49 @@
 .panel{
-    position: relative;
     box-sizing: border-box;
     padding: 0;
     margin: 0;
     ul{
+        position: relative;
         height: 100%;
         padding: 0;
         margin: 0;
         li{
+            box-sizing: border-box;
             position: absolute;
-            z-index: 1;
-            &>a:first-of-type:not(.line-head){
-                color: #aaa;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            border: 1px solid #5093dd;
+            background: #e8eef7;
+            border-radius: 6px;
+            span{
+                height: 100%;
+                line-height: 44px;
+                padding: 0 18px;
             }
-            &>a:last-of-type{
-                position: absolute;
-                right: 0;
-                top: -15px;
+            a{
+                display: inline-flex;
+                align-items: center;
+                width: 43px;
+                height: 100%;;
+            }
+            &>a:first-of-type{
+                justify-content: flex-end;
+                &:not(.line-head){
+                    color: #aaa;
+                }
+            }
+            &>a:nth-of-type(2){
+                justify-content: flex-start;
+            }
+            .close{
+                display: none;
             }
         }
     }
 }
 .svgLineGroup{
+    display: none;
     position: absolute;
     top: 0;
     width: 100%;

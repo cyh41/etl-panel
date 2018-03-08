@@ -15,10 +15,6 @@
       Header,
       Aside,
       Panel
-    },
-    computed: {},
-    data() {
-      return {}
     }
   }
 
