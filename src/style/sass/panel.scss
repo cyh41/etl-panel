@@ -1,64 +1,81 @@
-.panel{
-    box-sizing: border-box;
+.panel {
+  box-sizing: border-box;
+  position: relative;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  flex-flow: 0;
+  overflow: hidden;
+  ul {
     position: relative;
-    width: 100%;
+    height: 100%;
     padding: 0;
     margin: 0;
-    flex-flow: 0;
-    overflow:hidden;
-    ul{
-        position: relative;
+    li {
+      box-sizing: border-box;
+      position: absolute;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      border: 1px solid #d0e1f0;
+      margin: 0;
+      background: #e8eef7;
+      z-index: 1;
+      border-radius: 6px;
+      span {
         height: 100%;
-        padding: 0;
-        margin: 0;
-        li{
-            box-sizing: border-box;
-            position: absolute;
-            height: 44px;
-            display: flex;
-            align-items: center;
-            border: 1px solid #5093dd;
-            margin: 0;
-            background: #e8eef7;
-            z-index: 1;
-            border-radius: 6px;
-            span{
-                height: 100%;
-                line-height: 44px;
-                padding: 0 18px;
-            }
-            a{
-                display: inline-flex;
-                align-items: center;
-                width: 43px;
-                height: 100%;
-                cursor: pointer;
-            }
-            &>a:first-of-type{
-                justify-content: flex-end;
-                &:not(.line-head){
-                    color: #aaa;
-                }
-            }
-            &>a:nth-of-type(2){
-                justify-content: flex-start;
-            }
-            .close{
-                display: none;
-            }
+        line-height: 44px;
+        padding: 0 18px;
+      }
+      a {
+        display: inline-flex;
+        align-items: center;
+        width: 43px;
+        height: 100%;
+        cursor: pointer;
+      }
+      &>a:first-of-type {
+        justify-content: flex-end;
+        &:not(.line-head) {
+          color: #aaa;
         }
-    }
-}
-.svgLineGroup{
-    position: absolute;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    line{
-        stroke: #3d79bc;
-        stroke-width: 1;
+      }
+      &>a:nth-of-type(2) {
+        justify-content: flex-start;
+      }
+      .close {
+        position: absolute;
+        top: -22px;
+        right: 0;
+        width: 18px;
+        height: 18px;
+        fill: #5d8fc4;
+        opacity:0;
+        cursor: pointer;
         &:hover{
-            stroke: #ff9c00;
+            opacity:1;
         }
+      }
+      &:hover {
+          border-color: #5093dd;
+        .close {
+            opacity:1;
+        }
+      }
     }
+  }
+}
+
+.svgLineGroup {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  line {
+    stroke: #3d79bc;
+    stroke-width: 1.5;
+    &:hover {
+      stroke: #ff9c00;
+    }
+  }
 }

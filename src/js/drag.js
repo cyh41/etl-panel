@@ -44,7 +44,8 @@ class Drag {
         if (target.classList.contains("startLine")) { //点击尾部
           clickStartline.call(this);
           return;
-        } else if (target.classList.contains("close")) { //点击关闭
+        } else if (target.classList.contains("close") || target.parentNode.classList.contains("close")) { //点击关闭
+          this.el = this.el.tagName.toLowerCase() === "svg" ? this.el.parentNode : this.el;
           clickClose.call(this);
           return;
         } else if (target.classList.contains("drag")) {
@@ -162,7 +163,7 @@ class Drag {
     }
 
     function clickClose() {
-      let id = this.el.parentNode.getAttribute("id");
+      let id = this.el.getAttribute("id");
       let item = this.getVal(this.vue.panel, id);
       let self = this.vue;
       let [...itemLine] = item.line; //拷贝包含的线的数组

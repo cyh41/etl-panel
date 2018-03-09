@@ -6,15 +6,14 @@
         <a :class="{'line-head': lineHead(item.id)}">头部</a>
         <span class="drag">{{item.name}}</span>
         <a class="startLine">尾部</a>
-        <a @mouseup.stop="deleteItem($event,item.id)" class="close">x</a>
+          <icon name="close" :scale="20" class="close"></icon>
       </li>
     </ul>
     <svg class="svgLineGroup" @dblclick="deleteLine($event)">
       <defs>
         <marker id="arrow" markerWidth="10" markerHeight="10" refX="0" refY="3" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#3d79bc"></path></marker>
       </defs>
-      <line v-for="(item,index) in line" :x1="item.x1" :y1="item.y1" :x2="item.x2-6" :y2="item.y2" :data-id="item.id" marker-end="url(#arrow)""
-      />
+      <line v-for="(item,index) in line" :x1="item.x1" :y1="item.y1" :x2="item.x2-12" :y2="item.y2" :data-id="item.id" marker-end="url(#arrow)" @contextmenu.stop.prevent="contentMenu($event)"/>
     </svg>
   </div>
 </template>
@@ -86,6 +85,9 @@
           }
         });
         return val;
+      },
+      contentMenu(event){
+        console.log(event);
       }
     },
     computed: {
