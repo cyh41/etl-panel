@@ -1,21 +1,19 @@
 <template>
   <div class="panel">
     <ul v-drag="{vue:Vue}">
-      <li v-for="(item,index) in panel"
-          :id="item.id"
-          :data-x="item.x"
-          :data-y="item.y"
-          :data-start="stringfy(item.start)"
-          :data-end="stringfy(item.end)"
-          :style="{transform:`translate(${item.x}px,${item.y}px)`}">
+      <li v-for="(item,index) in panel" :id="item.id" :data-x="item.x" :data-y="item.y" :data-start="stringfy(item.start)" :data-end="stringfy(item.end)"
+        :style="{transform:`translate(${item.x}px,${item.y}px)`}">
         <a :class="{'line-head': lineHead(item.id)}">头部</a>
         <span class="drag">{{item.name}}</span>
         <a class="startLine">尾部</a>
         <a @mouseup.stop="deleteItem($event,item.id)" class="close">x</a>
       </li>
     </ul>
-    <svg class="svgLineGroup" @dblclick="deleteLine($event)" >
-      <line v-for="(item,index) in line" :x1="item.x1" :y1="item.y1" :x2="item.x2" :y2="item.y2" :data-id="item.id"
+    <svg class="svgLineGroup" @dblclick="deleteLine($event)">
+      <defs>
+        <marker id="arrow" markerWidth="10" markerHeight="10" refX="0" refY="3" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#3d79bc"></path></marker>
+      </defs>
+      <line v-for="(item,index) in line" :x1="item.x1" :y1="item.y1" :x2="item.x2-6" :y2="item.y2" :data-id="item.id" marker-end="url(#arrow)""
       />
     </svg>
   </div>
@@ -26,7 +24,7 @@
 
   export default ({
     methods: {
-      stringfy(str){
+      stringfy(str) {
         return JSON.stringify(str);
       },
       lineHead(index) {
@@ -35,25 +33,26 @@
           flag = false;
         }
         return flag;
+
         function compare() {
           return this.isEnd.some(v => {
             return v == index;
           })
         }
       },
-      deleteLine(event,id) {
+      deleteLine(event, id) {
         let item;
-        if(!event){
-          item = this.getVal(this.line,id);
-        } else{
+        if (!event) {
+          item = this.getVal(this.line, id);
+        } else {
           let target = event.target;
-          if(target.tagName === 'svg')return;
-          item = this.getVal(this.line,target.getAttribute("data-id"))
+          if (target.tagName === 'svg') return;
+          item = this.getVal(this.line, target.getAttribute("data-id"))
         }
         let startId = item.startId,
           endId = item.endId;
-        let start = this.getVal(this.panel,startId),
-          end = this.getVal(this.panel,endId);
+        let start = this.getVal(this.panel, startId),
+          end = this.getVal(this.panel, endId);
 
         splice(start.endItem, endId)
         splice(start.line, item.id);
@@ -102,9 +101,19 @@
         Vue: this,
         inDraw: '',
         isEnd: [],
-        aa:[
-          {text:1},{text:2},{text:3},{text:4},{text:5},{text:6},
-        ]
+        aa: [{
+          text: 1
+        }, {
+          text: 2
+        }, {
+          text: 3
+        }, {
+          text: 4
+        }, {
+          text: 5
+        }, {
+          text: 6
+        }, ]
       }
     }
   })
