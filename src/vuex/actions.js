@@ -11,6 +11,9 @@ export default {
         addpanellst({commit},obj){
             commit("ADDPANELLST",obj)
         },
+        setpanelline({commit},obj){
+            commit("SETPANELLINE",obj)
+        },
         startlinelst({commit},obj){
             commit("STARTLINELST",obj)
         },

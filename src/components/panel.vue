@@ -2,11 +2,11 @@
   <div class="panel">
     <ul v-drag="{vue:Vue}">
       <li v-for="(item,index) in panel"
-          :data-id="item.id"
+          :id="item.id"
           :data-x="item.x"
           :data-y="item.y"
-          :data-start="item.start"
-          :data-end="item.end"
+          :data-start="stringfy(item.start)"
+          :data-end="stringfy(item.end)"
           :style="{transform:`translate(${item.x}px,${item.y}px)`}">
         <a :class="{'line-head': lineHead(item.id)}">头部</a>
         <span class="drag">{{item.name}}</span>
@@ -26,13 +26,15 @@
 
   export default ({
     methods: {
+      stringfy(str){
+        return JSON.stringify(str);
+      },
       lineHead(index) {
         let flag = true;
         if (index === parseInt(this.inDraw) || compare.call(this)) {
           flag = false;
         }
         return flag;
-
         function compare() {
           return this.isEnd.some(v => {
             return v == index;

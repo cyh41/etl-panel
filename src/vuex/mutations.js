@@ -11,20 +11,28 @@ export default {
     state.treeLst[obj.typeindex]["items"].splice(obj.index, 1, obj.item)
   },
   ADDPANELLST(state, obj) {
-    state.panelLst.push(obj.item)
+    state.panelLst.push(obj.item);
+  },
+  SETPANELLINE(state,obj){
+    let item = obj.item,
+    startX = parseInt(item.x) + parseInt(obj.width),
+    startY = parseInt(item.y) + obj.height/2,
+    start = {
+      x: startX,
+      y: startY
+    };
+    item.start = start;
+    state.panelLst.splice(state.panelLst.length-1,1,item)
   },
   STARTLINELST(state, obj) {
-    let panelItem = getVal(state.panelLst,obj.startId),
-      x1 = panelItem.start.x,
-      y1 = panelItem.start.y,
-      startId = obj.startId,
+    let startId = obj.startId,
       id =obj.id;
     state.lineLst.push({
       startId: startId,
-      x1: x1,
-      y1: y1,
-      x2: x1,
-      y2: y1,
+      x1: obj.start.x,
+      y1: obj.start.y,
+      x2: obj.start.x,
+      y2: obj.start.y,
       id: id
     })
   },
