@@ -24,6 +24,7 @@ class Drag {
     function start(event) {
       let target = event.target,
         tagName = target.tagName.toLowerCase();
+        this.el = null;
 
       this.getBoundary.call(this); //获取各容器的宽高，用来计算边距
 
@@ -112,11 +113,11 @@ class Drag {
       this.vue.isEnd = panelItem.endItem;
       let el_panel = document.getElementsByClassName('panel')[0];
 
-      let draw = drawLine.bind(this),
-        end = endLine.bind(this);
+      let _drawLine = drawLine.bind(this),
+      _endLine = endLine.bind(this);
 
-      el_panel.addEventListener('mousemove', draw, false);
-      document.addEventListener('mouseup', end, false);
+      el_panel.addEventListener('mousemove', _drawLine, false);
+      document.addEventListener('mouseup', _endLine, false);
 
       function drawLine(event) { //线跟着鼠标走
         if (!this.vue.inDraw) return;
@@ -183,12 +184,14 @@ class Drag {
         x: event.pageX,
         y: event.pageY
       });
+      this.ifMove = true;//防止未mousemove就mouseup
     }
 
     function end(event) {
       document.removeEventListener('mousemove', _move)
       document.removeEventListener('mouseup', _end)
 
+      if(!this.ifMove)return;
       if (!this.id) { //从备选面板到备选面板则回归原来位置
         this.el.style.position = "static";
         if (this.currentX - this.offsetX < this.aside_width) {
@@ -209,11 +212,9 @@ class Drag {
         panelItem['x'] = x > 0 ? x : 0;
         panelItem['y'] = y > 0 ? y : 0;
 
-        if (!this.id) {
           let panelLst = this.vue.$store.state.panelLst;
           let idNumber = panelLst.length ? parseInt(panelLst[panelLst.length - 1].id.substr(1)) : -1;
           panelItem['id'] = 'i' + (idNumber + 1);
-        }
 
         panelItem['x'] = this.currentX + this.offsetX2 <= this.panel_width + this.aside_width ? x : this.panel_width - this.el.offsetWidth;
 
@@ -244,6 +245,7 @@ class Drag {
           })
         }.bind(this))
       }
+      this.ifMove = null;
     }
   }
   getVal(lst, id) {
