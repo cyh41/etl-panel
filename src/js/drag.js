@@ -221,7 +221,7 @@ class Drag {
         panelItem['y'] = this.currentY + this.offsetY2 <= this.header_height + this.panel_height ? y : this.panel_height - this.el.offsetHeight;
 
         if (this.currentY - this.offsetY < this.header_height) {
-          panelItem['y'] = 0;
+          panelItem['y'] = 22;
         }
 
         panelItem['line'] = []; //存放line
@@ -259,7 +259,8 @@ class Drag {
     return val;
   }
   getBoundary() { //获取边界值
-    this.header_height = document.getElementsByTagName('header')[0].offsetHeight;
+    this.svg_height = 22;
+    this.header_height = parseInt(document.getElementsByTagName('header')[0].offsetHeight) + this.svg_height;
     this.aside_width = document.getElementsByTagName('aside')[0].offsetWidth;
 
     let panel = document.getElementsByClassName('panel')[0];
