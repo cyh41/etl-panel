@@ -15,13 +15,9 @@ aside{
         background: #2d3767;
         font-weight: normal;
         cursor:pointer;
-        &:before{
+        &::before{
             content: "-";
             padding-right: 12px;
-            font-size: 18px;
-        }
-        &.plus:before{
-            content: "+"
         }
     }
     ul{
