@@ -132,8 +132,8 @@ class Drag {
       }
 
       function endLine(event) {
-        el_panel.removeEventListener('mousemove', draw, false);
-        document.removeEventListener('mouseup', end, false);
+        el_panel.removeEventListener('mousemove', _drawLine, false);
+        document.removeEventListener('mouseup', _endLine, false);
         if (event.target.className == 'line-head') {
           let line_head = event.target;
           let endId = line_head.parentNode.getAttribute('id');
@@ -220,7 +220,7 @@ class Drag {
 
         panelItem['y'] = this.currentY + this.offsetY2 <= this.header_height + this.panel_height ? y : this.panel_height - this.el.offsetHeight;
 
-        if (this.currentY - this.offsetY < this.header_height) {
+        if (this.currentY - this.offsetY < this.header_height + this.svg_height) {
           panelItem['y'] = 22;
         }
 
@@ -260,7 +260,7 @@ class Drag {
   }
   getBoundary() { //获取边界值
     this.svg_height = 22;
-    this.header_height = parseInt(document.getElementsByTagName('header')[0].offsetHeight) + this.svg_height;
+    this.header_height = parseInt(document.getElementsByTagName('header')[0].offsetHeight);
     this.aside_width = document.getElementsByTagName('aside')[0].offsetWidth;
 
     let panel = document.getElementsByClassName('panel')[0];
@@ -319,7 +319,7 @@ class Drag {
 
 
   getRange() { //是否超出范围
-    if (this.currentY - this.offsetY <= this.header_height || this.currentX + this.offsetX2 >= this.aside_width + this.panel_width || this.currentY + this.offsetY2 >= this.panel_height + this.header_height) { //范围
+    if (this.currentY - this.offsetY <= this.header_height + this.svg_height || this.currentX + this.offsetX2 >= this.aside_width + this.panel_width || this.currentY + this.offsetY2 >= this.panel_height + this.header_height) { //范围
       return false;
     }
 
