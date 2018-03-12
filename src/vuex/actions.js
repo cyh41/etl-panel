@@ -31,5 +31,8 @@ export default {
         },
         deletepanellst({commit},index){
             commit("DELETEPANELLST",index)
+        },
+        showmenu({commit},obj){
+            commit("SHOWMENU",obj)
         }
 }

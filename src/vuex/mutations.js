@@ -79,6 +79,9 @@ export default {
         state.panelLst.splice(i,1)
       }
     })
+  },
+  SHOWMENU(state,obj){
+    state.menu = obj;
   }
 }
 

@@ -87,7 +87,12 @@
         return val;
       },
       contentMenu(event){
-        console.log(event);
+        let obj = {
+          show:true,
+          top:event.y,
+          left: event.x
+        };
+        this.$store.dispatch("showmenu",obj)
       }
     },
     computed: {
