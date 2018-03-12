@@ -28,9 +28,9 @@
     data() {
       return {
         menuLst: [{
-          name: '关闭',
-          id: 'close',
-          icon: 'bigclose'
+          name: '删除',
+          id: 'delete',
+          icon: 'delete'
         },{
           name: '未开放',
           id: 'close',
@@ -78,12 +78,12 @@
       border-radius: 50%;
       color: #fff;
       font-size: 12px;
-      opacity: .8;
+      opacity: .9;
       @for $i from 0 through $liColumns {
         li:nth-of-type(#{$i}) {
           transform: rotate($i * 60deg);
           svg,span {
-            transform: rotate( -45deg);
+            transform: rotate($i * -60deg);
           }
         }
       }
@@ -93,24 +93,24 @@
         align-items: center;
         position: absolute;
         top: .2em;
-        left: 0;
+        left: .2em;
         width: 2em;
         height: 2em;
         border: 2px solid #d0e1f0;
         border-radius: 50%;
         background: #5093dd;
-        transform-origin: 3.8em 3.8em;
+        transform-origin: 3.7em 3.7em;
         cursor: pointer;
         &:hover{
             border-color: #fff;
         }
         svg {
-          width: 50%;
-          height: 50%;
+          width: 60%;
+          height: 60%;
         }
         span{
             position: absolute;
-            top: -1em;
+            top: -1.8em;
             left: -1.8em;
             color: #000
         }
