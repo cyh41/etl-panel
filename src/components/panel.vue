@@ -13,15 +13,20 @@
       <defs>
         <marker id="arrow" markerWidth="10" markerHeight="10" refX="0" refY="3" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#3d79bc"></path></marker>
       </defs>
-      <line v-for="(item,index) in line" :x1="item.x1" :y1="item.y1" :x2="item.x2-12" :y2="item.y2" :data-id="item.id" marker-end="url(#arrow)" @contextmenu.stop.prevent="contentMenu($event)"/>
+      <line v-for="(item,index) in line" :x1="item.x1" :y1="item.y1" :x2="item.x2-12" :y2="item.y2" :data-id="item.id" marker-end="url(#arrow)" @contextmenu.stop.prevent="contentMenu($event,item.id)"/>
     </svg>
+    <Menu @deleteline="deleteLine"></Menu>
   </div>
 </template>
 
 <script>
   import Drag from '../js/drag'
+  import Menu from '../components/menu.vue'
 
   export default ({
+    components:{
+      Menu
+    },
     methods: {
       stringfy(str) {
         return JSON.stringify(str);
@@ -86,13 +91,14 @@
         });
         return val;
       },
-      contentMenu(event){
+      contentMenu(event,id){
         let obj = {
           show:true,
           top:event.y,
           left: event.x
         };
         this.$store.dispatch("showmenu",obj)
+        this.$store.state.lineId = id;
       }
     },
     computed: {
@@ -107,20 +113,7 @@
       return {
         Vue: this,
         inDraw: '',
-        isEnd: [],
-        aa: [{
-          text: 1
-        }, {
-          text: 2
-        }, {
-          text: 3
-        }, {
-          text: 4
-        }, {
-          text: 5
-        }, {
-          text: 6
-        }, ]
+        isEnd: []
       }
     }
   })

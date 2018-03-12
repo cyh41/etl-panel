@@ -6,7 +6,7 @@
   margin: 0;
   flex-flow: 0;
   overflow: hidden;
-  ul {
+  &>ul {
     position: relative;
     height: 100%;
     padding: 0;
@@ -74,6 +74,7 @@
   line {
     stroke: #3d79bc;
     stroke-width: 1.5;
+    cursor: pointer;
     &:hover {
       stroke: #ff9c00;
     }

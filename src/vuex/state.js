@@ -70,5 +70,6 @@ export default {
         ],
         panelLst: [],
         lineLst: [],
-        menu: {}
+        menu: {},
+        lineId: ''
 }
