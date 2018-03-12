@@ -32,21 +32,21 @@
           id: 'close',
           icon: 'bigclose'
         },{
-          name: '关闭',
+          name: '未开放',
           id: 'close',
           icon: 'hive'
         },{
-          name: '关闭',
+          name: '未开放',
+          id: 'close',
+          icon: 'neo4j'
+        },{
+          name: '未开放',
           id: 'close',
           icon: 'hive'
         },{
-          name: '关闭',
+          name: '未开放',
           id: 'close',
-          icon: 'hive'
-        },{
-          name: '关闭',
-          id: 'close',
-          icon: 'hive'
+          icon: 'hbase'
         }]
       }
     }
@@ -81,8 +81,7 @@
       opacity: .8;
       @for $i from 0 through $liColumns {
         li:nth-of-type(#{$i}) {
-          transform: rotate($i * 40deg);
-          transition-delay: ($i * 0.02s);
+          transform: rotate($i * 60deg);
           svg,span {
             transform: rotate( -45deg);
           }
@@ -111,8 +110,8 @@
         }
         span{
             position: absolute;
-            top: -9px;
-            left: -15px;
+            top: -1em;
+            left: -1.8em;
             color: #000
         }
       }
