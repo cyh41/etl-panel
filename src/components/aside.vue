@@ -3,7 +3,7 @@
     <div v-drag="{vue:Vue,tree:true}">
       <div v-for="(type,typeIdx) in tree">
         <h3 :class="['item',{'plus':type.hideItems}]" @click="toggleItems(typeIdx)">{{type.name}}</h3>
-        <ul v-show="!type.hideItems">
+        <ul>
           <li class="item" v-for="(item,idx) in type.items" :data-x="item.x" :data-y="item.y" :data-typeIndex="typeIdx" :data-index="idx" :style="{transform:`translate(${item.x}px,${item.y}px)`}">
             <icon :name="item.icon" :scale="20"></icon><span>{{item.name}}</span>
           </li>

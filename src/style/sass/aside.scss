@@ -19,6 +19,19 @@ aside{
             content: "-";
             padding-right: 12px;
         }
+        &+ul{
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .5s;
+        }
+        &.plus{
+            &~ul{
+                max-height: 300px;
+            }
+            &::before{
+                content: "+";
+            }
+        }
     }
     ul{
         padding: 0;
